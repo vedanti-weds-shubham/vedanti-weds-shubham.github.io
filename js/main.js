@@ -108,13 +108,18 @@
   const io = new IntersectionObserver((entries) => {
     entries.forEach((en) => {
       if (!en.isIntersecting) return;
-      en.target.classList.add(en.target.classList.contains("draw") ? "drawn" : "in");
+      if (en.target.classList.contains("draw")) { en.target.classList.add("drawn"); return; }  // keep watching drawings
+      en.target.classList.add("in");
       io.unobserve(en.target);
     });
   }, { threshold: 0.18, rootMargin: "0px 0px -6% 0px" });
-  function watchDraw(el) { io.observe(el); }
+  // Once a drawing has fully left the screen, rewind it so it draws again next time it scrolls in
+  const rewind = new IntersectionObserver((entries) => {
+    entries.forEach((en) => { if (!en.isIntersecting) en.target.classList.remove("drawn"); });
+  }, { threshold: 0 });
+  function watchDraw(el) { io.observe(el); rewind.observe(el); }
   $$(".reveal").forEach((el, i) => { if (el.parentElement.classList.contains("invite")) el.style.setProperty("--d", `${(i % 5) * 0.08}s`); io.observe(el); });
-  $$(".draw").forEach((el) => { if (!el.closest(".hero")) io.observe(el); });
+  $$(".draw").forEach((el) => { if (!el.closest(".hero")) watchDraw(el); });
 
   /* ---------- 5. Envelope → open ----------
      The tap itself is handled by the small script right after the envelope

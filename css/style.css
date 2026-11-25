@@ -18,6 +18,7 @@
 
   --radius: 18px;
   --ease: cubic-bezier(.2, .8, .2, 1);
+  --spring: cubic-bezier(.34, 1.56, .64, 1);   /* gentle overshoot for taps */
   --safe-b: env(safe-area-inset-bottom, 0px);
 }
 
@@ -157,7 +158,7 @@ em { font-style: italic; }
 .topnav-links { display: flex; gap: 28px; align-items: center; }
 .topnav-links a { text-decoration: none; font: 600 13px var(--font-display); letter-spacing: .18em; text-transform: uppercase; }
 .btn-mini { padding: 9px 18px; border: 1.5px solid var(--ink); border-radius: 99px; transition: background .25s, color .25s; }
-.btn-mini:hover { background: var(--picked); border-color: var(--picked-line); }
+@media (hover: hover) { .btn-mini:hover { background: var(--picked); border-color: var(--picked-line); } }
 
 .rsvp-pill {
   position: fixed; z-index: 50; right: 18px; bottom: calc(18px + var(--safe-b));
@@ -258,7 +259,8 @@ em { font-style: italic; }
   font: 600 12px var(--font-display); letter-spacing: .14em; text-transform: uppercase; text-decoration: none; background: transparent;
   transition: background .25s, color .25s, transform .2s; min-height: 44px;
 }
-.btn-ghost:hover, .btn-ghost:active { background: var(--picked); border-color: var(--picked-line); }
+@media (hover: hover) { .btn-ghost:hover { background: var(--picked); border-color: var(--picked-line); } }
+.btn-ghost:active { background: var(--picked); border-color: var(--picked-line); }
 .btn-ghost:active { transform: scale(.96); }
 
 /* =====================================================================
@@ -296,7 +298,9 @@ input[type=radio], input[type=checkbox] { position: absolute; opacity: 0; pointe
   border: 1.5px solid rgba(29, 26, 22, .35); font-size: 18px; transition: all .25s var(--ease); user-select: none;
 }
 .chips input:checked + span { background: var(--picked); color: var(--ink); border-color: var(--picked-line); }
-.chips input:checked + span::before { content: "✓"; font-size: 14px; }
+.chips span::before { content: "✓"; font-size: 14px; display: inline-block; max-width: 0; margin-right: -6px; opacity: 0; transform: scale(.4); overflow: hidden;
+  transition: max-width .35s var(--ease), margin-right .35s var(--ease), opacity .25s, transform .4s var(--spring); }
+.chips input:checked + span::before { max-width: 1em; margin-right: 0; opacity: 1; transform: none; }
 .chips input:focus-visible + span, .choice-cards input:focus-visible + span, .segmented input:focus-visible + span { outline: 2px solid var(--gold); outline-offset: 2px; }
 
 .choice-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -345,7 +349,7 @@ input[type=radio], input[type=checkbox] { position: absolute; opacity: 0; pointe
 .day-chips { display: grid; grid-template-columns: repeat(var(--n, 1), minmax(0, 1fr)); gap: 8px; }
 .day-chips label { min-width: 0; }
 .day-chips span { width: 100%; height: 100%; justify-content: center; text-align: center; padding: 10px 6px; font-size: 16px; line-height: 1.15; border-radius: 14px; }
-.day-chips input:checked + span::before { content: none; }
+.day-chips span::before, .day-chips input:checked + span::before { content: none; }
 
 /* "are you sure?" nudge for the groom's side */
 .side-tease { margin: 8px 0 0 4px; font: 600 20px var(--font-hand); color: #c0504d; min-height: 0; }
@@ -407,3 +411,24 @@ input[type=radio], input[type=checkbox] { position: absolute; opacity: 0; pointe
   .js .draw .ink { stroke-dashoffset: 0; } .js .draw .dot, .js .draw .bubble { opacity: 1; } .js .draw .wash { opacity: .28; transform: none; }
   .petals { display: none; }
 }
+
+/* ---------- Butter-smooth taps (no blue flash on phones) ---------- */
+html { -webkit-tap-highlight-color: transparent; }
+a, button, label, input, select, textarea, summary, [role="button"] {
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;   /* no grey/blue box, no tap delay */
+}
+label, button, .btn-ghost, .btn-mini, .btn-primary, .envelope {
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;   /* no text-selection on tap */
+}
+:focus:not(:focus-visible) { outline: none; }
+
+.chips span, .choice-cards span, .segmented span, .stepper button, .btn-ghost, .btn-mini, .btn-primary {
+  transition: background-color .4s var(--ease), border-color .4s var(--ease), color .3s, box-shadow .4s var(--ease), transform .45s var(--spring);
+}
+/* soft press while the finger is down */
+label:active > input + span { transform: scale(.95); transition-duration: .12s; }
+.choice-cards label:active > input + span { transform: scale(.97); }
+.stepper button:active { transform: scale(.9); transition-duration: .12s; }
+/* little "pop" when something becomes selected */
+.chips input:checked + span, .segmented input:checked + span { animation: pick .45s var(--spring); }
+@keyframes pick { 0% { transform: scale(.94); } 60% { transform: scale(1.04); } 100% { transform: scale(1); } }
