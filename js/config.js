@@ -112,7 +112,7 @@ window.WEDDING = {
      Every reply is saved as a new row in your Google Sheet.
      Set-up (once): see rsvp-google-sheet.gs and paste the web-app URL below. */
   rsvp: {
-    googleSheetUrl: "",       // ← paste your Apps Script web-app URL (ends in /exec)
+    googleSheetUrl: "https://script.google.com/macros/s/AKfycbzmUmkCEGbBauDnkCb4wf_ObHCUZilJxa0-_wsY9ZnSgfuNJKSOY0vBp1X4PRjsJ8xPEg/exec",
     deadline: "",             // e.g. "10 January 2027" — "" shows no deadline
     sides: ["Bride's side", "Groom's side"],   // [] hides this question
     maxGuests: 10,
