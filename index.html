@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f5efe3" />
+  <title>Oui Do! — Wedding Invitation</title>
+  <!-- Link preview when shared on WhatsApp (edit text; add assets/preview.jpg ~1200x630) -->
+  <meta property="og:title" content="Oui Do! You're invited 💌" />
+  <meta property="og:description" content="Join us for six days of celebration — tap to open your invitation." />
+  <meta property="og:image" content="assets/preview.jpg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Caveat:wght@500;700&family=Tiro+Devanagari+Marathi&family=Tiro+Bangla&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="locked">
+
+  <!-- Hidden SVG filter that gives every line a slightly hand-drawn wobble -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="wobble"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="2.2"/></filter>
+  </svg>
+
+  <!-- ============ 1. ENVELOPE INTRO ============ -->
+  <div class="envelope-screen" id="envelope" role="dialog" aria-label="Open your invitation">
+    <button class="envelope" id="openEnvelope" aria-label="Tap to open the invitation">
+      <span class="env-back"></span>
+      <span class="env-card"><span class="env-card-text">Oui Do!</span></span>
+      <span class="env-front"></span>
+      <span class="env-flap"></span>
+      <span class="seal" id="sealInitials">P&amp;A</span>
+    </button>
+    <p class="envelope-hint">you've got mail! <span>tap to open</span></p>
+  </div>
+
+  <!-- ============ TOP NAV (desktop) + RSVP pill (phone) ============ -->
+  <nav class="topnav" id="topnav" aria-label="Sections">
+    <a href="#home" class="topnav-mark" data-names-short>P &amp; A</a>
+    <div class="topnav-links">
+      <a href="#invite">Invite</a><a href="#events">Celebrations</a><a href="#rsvp" class="btn-mini">RSVP</a>
+    </div>
+  </nav>
+  <a href="#rsvp" class="rsvp-pill" id="rsvpPill">RSVP <span aria-hidden="true">💌</span></a>
+
+  <main>
+    <!-- ============ 2. HERO ============ -->
+    <section class="hero" id="home">
+      <div class="petals" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <div class="hero-text">
+          <p class="blessing" data-bind="blessing"></p>
+          <div class="hero-doves" data-art="doves"></div>
+          <h1 class="headline" data-headline></h1>
+          <p class="hand tagline" data-bind="tagline"></p>
+          <p class="names">
+            <span data-bind="bride"></span>
+            <span class="amp">&amp;</span>
+            <span data-bind="groom"></span>
+          </p>
+          <p class="hero-meta"><span data-bind="dateText"></span><i>✦</i><span data-bind="cityText"></span></p>
+        </div>
+        <figure class="polaroid" data-gif="hero" data-fallback="bouquet">
+          <span class="tape t1"></span><span class="tape t2"></span>
+          <div class="polaroid-img"></div>
+          <figcaption class="hand" data-bind="heroPhotoCaption"></figcaption>
+        </figure>
+      </div>
+      <a href="#invite" class="scroll-cue" aria-label="Scroll down"><span class="hand">scroll</span><span data-art="arrow"></span></a>
+    </section>
+
+    <!-- ============ 3. INVITATION + COUNTDOWN ============ -->
+    <section class="invite section" id="invite">
+      <div data-art="divider" class="divider reveal"></div>
+      <p class="kicker reveal">you are cordially invited</p>
+      <p class="invite-text reveal" data-bind="invitationText"></p>
+      <div class="countdown reveal" id="countdown" aria-live="polite">
+        <div><b data-cd="d">00</b><span>days</span></div>
+        <div><b data-cd="h">00</b><span>hours</span></div>
+        <div><b data-cd="m">00</b><span>mins</span></div>
+        <div><b data-cd="s">00</b><span>secs</span></div>
+      </div>
+      <p class="hand countdown-note reveal">…until we say "oui"!</p>
+    </section>
+
+    <!-- ============ 4. EVENTS ============ -->
+    <section class="events section" id="events">
+      <header class="section-head reveal">
+        <p class="kicker">the festivities</p>
+        <h2>Six celebrations,<br /><em>one love story</em></h2>
+        <p class="hand">two cultures, double the fun ✿</p>
+      </header>
+      <div class="timeline" id="timeline"><!-- filled from config.js --></div>
+    </section>
+
+    <!-- ============ 5. RSVP ============ -->
+    <section class="rsvp section" id="rsvp">
+      <header class="section-head reveal">
+        <p class="kicker">répondez s'il vous plaît</p>
+        <h2>Will you say <em>oui</em> too?</h2>
+        <p class="hand">kindly reply by <span data-bind="rsvp.deadline"></span></p>
+      </header>
+
+      <div class="rsvp-card reveal">
+        <span class="stamp" aria-hidden="true">💌<small>RSVP</small></span>
+        <form id="rsvpForm" novalidate>
+          <label class="field">
+            <span>Your name(s)</span>
+            <input name="name" required autocomplete="name" placeholder="e.g. Neha & Rahul Sharma" />
+          </label>
+
+          <fieldset class="field" id="sideField">
+            <legend>You're coming from…</legend>
+            <div class="chips single" id="sideChips"></div>
+          </fieldset>
+
+          <fieldset class="field">
+            <legend>Will you be joining us?</legend>
+            <div class="choice-cards">
+              <label><input type="radio" name="attending" value="yes" checked /><span><b>Joyfully accept</b><i>wouldn't miss it!</i></span></label>
+              <label><input type="radio" name="attending" value="no" /><span><b>Regretfully decline</b><i>celebrating from afar</i></span></label>
+            </div>
+          </fieldset>
+
+          <div class="if-attending" id="ifAttending">
+            <div class="field">
+              <span class="label">Number of guests <small>(including you)</small></span>
+              <div class="stepper">
+                <button type="button" data-step="-1" aria-label="Fewer guests">−</button>
+                <output id="guestCount">1</output>
+                <button type="button" data-step="1" aria-label="More guests">+</button>
+              </div>
+            </div>
+
+            <fieldset class="field">
+              <legend>Which celebrations will you attend?</legend>
+              <div class="chips" id="eventChips"></div>
+            </fieldset>
+
+            <fieldset class="field">
+              <legend>Do you need accommodation?</legend>
+              <div class="segmented">
+                <label><input type="radio" name="stay" value="yes" /><span>Yes, please</span></label>
+                <label><input type="radio" name="stay" value="no" checked /><span>No, I'm sorted</span></label>
+              </div>
+            </fieldset>
+
+            <div class="stay-dates" id="stayDates">
+              <label class="field"><span>Arriving on</span><input type="date" name="checkin" /></label>
+              <label class="field"><span>Leaving on</span><input type="date" name="checkout" /></label>
+            </div>
+
+            <fieldset class="field" id="foodField">
+              <legend>Food preference</legend>
+              <div class="chips single">
+                <label><input type="radio" name="food" value="Veg" /><span>Veg</span></label>
+                <label><input type="radio" name="food" value="Non-veg" /><span>Non-veg</span></label>
+                <label><input type="radio" name="food" value="Jain" /><span>Jain</span></label>
+              </div>
+            </fieldset>
+          </div>
+
+          <label class="field">
+            <span>A note for the couple <small>(optional)</small></span>
+            <textarea name="message" rows="3" placeholder="Wishes, song requests, anything!"></textarea>
+          </label>
+
+          <p class="form-error" id="formError" role="alert"></p>
+          <button class="btn-primary" type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.4 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.4-3.9-4.6-4.1-.1-.2-1.1-1.4-1.1-2.7s.7-1.9.9-2.2c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.1.1.3 0 .5l-.3.4-.4.4c-.1.1-.3.3-.1.6.2.3.7 1.2 1.6 1.9 1.1.9 2 1.2 2.2 1.4.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.6-.1 1.3z"/></svg>
+            Send my RSVP on WhatsApp
+          </button>
+          <p class="fine">WhatsApp opens with your reply already written — just tap <b>Send</b>.</p>
+        </form>
+
+        <div class="rsvp-done" id="rsvpDone" hidden>
+          <div data-art="reception" class="done-art"></div>
+          <h3>Merci beaucoup!</h3>
+          <p>WhatsApp should be opening with your RSVP. Don't forget to hit <b>Send</b>!</p>
+          <a class="btn-primary" id="waFallback" href="#" target="_blank" rel="noopener">Open WhatsApp again</a>
+          <button class="btn-link" type="button" id="editRsvp">Edit my response</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 6. FOOTER ============ -->
+    <footer class="footer section">
+      <figure class="footer-art" data-gif="footer" data-fallback="doves"><div class="polaroid-img"></div></figure>
+      <p class="hand footer-note reveal" data-bind="footerNote"></p>
+      <p class="footer-names reveal"><span data-bind="bride"></span> <em>&amp;</em> <span data-bind="groom"></span></p>
+      <p class="hashtag reveal" data-bind="hashtag"></p>
+    </footer>
+  </main>
+
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <script src="js/config.js"></script>
+  <script src="js/illustrations.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
