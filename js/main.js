@@ -172,7 +172,7 @@
 
   /* ---------- 9. RSVP form → Google Sheet ---------- */
   const form = $("#rsvpForm"), R = C.rsvp;
-  if (!R.deadline && $("#rsvpSub")) $("#rsvpSub").textContent = "we'd love to know if you can make it. please rsvp as soon as possible.";
+  if (!R.deadline && $("#rsvpSub")) $("#rsvpSub").textContent = "we'd love to know if you can make it. please RSVP as soon as possible!";
   const sides = R.sides || [];
   if (sides.length) {
     $("#sideChips").innerHTML = sides.map((label, i) =>
@@ -182,7 +182,7 @@
     $$("input[name=side]", $("#sideChips")).forEach((r) => r.addEventListener("change", () => {
       if (!tease) return;
       const groomSide = r.checked && r.value === sides[1];
-      tease.textContent = groomSide ? "are you sure? 🤭" : "";
+      tease.textContent = groomSide ? "wrong side" : "";
       tease.classList.remove("wiggle"); void tease.offsetWidth;
       if (groomSide) tease.classList.add("wiggle");
     }));

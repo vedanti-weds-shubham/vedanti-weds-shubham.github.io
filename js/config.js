@@ -24,9 +24,9 @@ window.WEDDING = {
   hashtag: "",                               // "" hides it
 
   invitationText:
-    "With the blessings of both the families, we joyfully " +
+    "With blessings of both the families, we joyfully " +
     "invite you to celebrate our wedding, as " +
-    "two cultures and one very happy couple come together. " +
+    "two cultures and one very happy couple come together.\n" +
     "Your presence would make our celebrations complete.",
 
   /* ---------- GIFs / images ----------
@@ -71,7 +71,7 @@ window.WEDDING = {
       name: "Sangeet",
       native: "संगीत",
       art: "sangeet",
-      accent: "#C8326B",
+      accent: "#6C5CE7",
       note: "bring your dancing shoes",
       date: "2027-01-28", start: "19:30", end: "",
       venue: "Champagne Ball Room, Novotel Mumbai", address: "Juhu Beach, Balraj Sahani Road, Juhu, Mumbai – 400 049", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Novotel+Mumbai+Juhu+Beach",

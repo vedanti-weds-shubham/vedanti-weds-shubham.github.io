@@ -8,8 +8,8 @@
   --ink-soft: #5b5348;
   --gold: #b8892e;         /* accent */
   --gold-soft: #e7d3a6;
-  --picked: #f6d5cf;       /* pastel blush for selected buttons */
-  --picked-line: #d9a196;  /* its border */
+  --picked: #d4ead0;       /* pastel mint-green for selected buttons */
+  --picked-line: #93bf8a;  /* its border */
 
   --font-display: "Fraunces", Georgia, serif;
   --font-body: "Cormorant Garamond", Georgia, serif;
@@ -218,7 +218,7 @@ em { font-style: italic; }
    ===================================================================== */
 .invite { text-align: center; max-width: 720px; margin: 0 auto; }
 .divider { width: 220px; margin: 0 auto 34px; }
-.invite-text { font-size: clamp(22px, 5.6vw, 28px); line-height: 1.5; margin: 0 auto 44px; font-style: italic; }
+.invite-text { font-size: clamp(22px, 5.6vw, 28px); line-height: 1.5; margin: 0 auto 44px; font-style: italic; white-space: pre-line; }
 .countdown { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 420px; margin: 0 auto; }
 .countdown div { border: 1.5px solid var(--ink); border-radius: 14px; padding: 12px 4px 8px; background: rgba(255, 253, 248, .5); position: relative; }
 .countdown div:nth-child(odd) { transform: rotate(-1.5deg); } .countdown div:nth-child(even) { transform: rotate(1.5deg); }

@@ -13,8 +13,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Caveat:wght@500;700&family=Great+Vibes&family=Tiro+Devanagari+Marathi&family=Tiro+Bangla&display=swap" rel="stylesheet" />
-  <!-- ?v=9 → bump this number (all 4 places) after each update so browsers fetch fresh files -->
-  <link rel="stylesheet" href="css/style.css?v=9" />
+  <!-- ?v=12 → bump this number (all 4 places) after each update so browsers fetch fresh files -->
+  <link rel="stylesheet" href="css/style.css?v=12" />
 </head>
 <body class="locked">
 
@@ -27,10 +27,10 @@
   <div class="envelope-screen" id="envelope" role="dialog" aria-label="Open your invitation">
     <button class="envelope" id="openEnvelope" aria-label="Tap to open the invitation">
       <span class="env-back"></span>
-      <span class="env-card"><span class="env-card-text">Oui Do!</span></span>
+      <!-- <span class="env-card"><span class="env-card-text">Oui Do!</span></span> -->
       <span class="env-front"></span>
       <span class="env-flap"></span>
-      <span class="seal" id="sealInitials">P&amp;A</span>
+      <span class="seal" id="sealInitials">V&amp;S</span>
     </button>
     <p class="envelope-hint">you've got mail! <span>tap to open</span></p>
   </div>
@@ -56,7 +56,7 @@
 
   <!-- ============ TOP NAV (desktop) + RSVP pill (phone) ============ -->
   <nav class="topnav" id="topnav" aria-label="Sections">
-    <a href="#home" class="topnav-mark" data-names-short>P &amp; A</a>
+    <a href="#home" class="topnav-mark" data-names-short>V &amp; S</a>
     <div class="topnav-links">
       <a href="#invite">Invite</a><a href="#events">Celebrations</a><a href="#rsvp" class="btn-mini">RSVP</a>
     </div>
@@ -192,7 +192,7 @@
 
           <p class="form-error" id="formError" role="alert"></p>
           <button class="btn-primary" type="submit" id="submitBtn">
-            <span class="btn-label">Send my RSVP</span> <span aria-hidden="true">💌</span>
+            <span class="btn-label">Send my RSVP</span> 
           </button>
           <p class="fine">You can change your reply any time by sending it again.</p>
         </form>
@@ -217,8 +217,8 @@
 
   <canvas id="confetti" aria-hidden="true"></canvas>
 
-  <script src="js/config.js?v=9"></script>
-  <script src="js/illustrations.js?v=9"></script>
-  <script src="js/main.js?v=9"></script>
+  <script src="js/config.js?v=12"></script>
+  <script src="js/illustrations.js?v=12"></script>
+  <script src="js/main.js?v=12"></script>
 </body>
 </html>
