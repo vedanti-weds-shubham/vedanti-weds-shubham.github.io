@@ -17,10 +17,17 @@
     const v = get(el.dataset.bind);
     if (v) el.textContent = v; else el.style.display = "none";
   });
-  const initials = C.initials || `${C.bride[0]}&${C.groom[0]}`;
+  // Name order: groomFirst:true in config shows "Groom & Bride"
+  const [n1, n2] = C.groomFirst ? [C.groom, C.bride] : [C.bride, C.groom];
+  C.couple = `${n1} & ${n2}`;
+  $$(".names, .footer-names").forEach((el) => {
+    const s = $$("[data-bind]", el);
+    if (s.length === 2) { s[0].textContent = n1; s[1].textContent = n2; }
+  });
+  const initials = C.initials || `${n1[0]}&${n2[0]}`;
   $("#sealInitials").textContent = initials;
-  $$("[data-names-short]").forEach((el) => (el.textContent = `${C.bride[0]} & ${C.groom[0]}`));
-  document.title = `${C.bride} & ${C.groom} — ${C.headline}`;
+  $$("[data-names-short]").forEach((el) => (el.textContent = `${n1[0]} & ${n2[0]}`));
+  document.title = `${C.couple} — ${C.headline}`;
 
   // Headline: split into letters for the bouncy entrance
   const tilt = [-6, 4, -3, 0, 5, -4, 3, -5];
@@ -37,7 +44,7 @@
     if (!e.date || !e.start) return "";
     const d = e.date.replace(/-/g, ""), s = e.start.replace(":", "") + "00", en = (e.end || e.start).replace(":", "") + "00";
     const p = new URLSearchParams({
-      action: "TEMPLATE", text: `${e.name} · ${C.bride} & ${C.groom}`, dates: `${d}T${s}/${d}T${en}`, ctz: "Asia/Kolkata",
+      action: "TEMPLATE", text: `${e.name} · ${C.couple}`, dates: `${d}T${s}/${d}T${en}`, ctz: "Asia/Kolkata",
       location: [e.venue, e.address].filter(Boolean).join(", "), details: `${e.note || ""}\nDress code: ${e.dressCode || "—"}\n${location.href.split("#")[0]}`,
     });
     return "https://calendar.google.com/calendar/render?" + p;
@@ -159,12 +166,13 @@
   }
   addEventListener("scroll", onScroll, { passive: true });
 
-  /* ---------- 9. RSVP form ---------- */
+  /* ---------- 9. RSVP form → Google Sheet ---------- */
   const form = $("#rsvpForm"), R = C.rsvp;
-  const contacts = R.contacts || [];
-  if (contacts.length > 1) {
-    $("#sideChips").innerHTML = contacts.map((c, i) =>
-      `<label><input type="radio" name="side" value="${i}" ${i === 0 ? "checked" : ""}/><span>${esc(c.label)}</span></label>`).join("");
+  if (!R.deadline) $("#rsvpSub").textContent = "we'd love to know if you can make it";
+  const sides = R.sides || [];
+  if (sides.length) {
+    $("#sideChips").innerHTML = sides.map((label, i) =>
+      `<label><input type="radio" name="side" value="${esc(label)}" ${i === 0 ? "checked" : ""}/><span>${esc(label)}</span></label>`).join("");
   } else $("#sideField").remove();
   $("#eventChips").innerHTML = C.events.map((e) =>
     `<label><input type="checkbox" name="events" value="${esc(e.name)}" checked/><span>${esc(e.name)}</span></label>`).join("");
@@ -184,8 +192,23 @@
   };
   form.addEventListener("change", sync); sync();
 
-  let waUrl = "";
-  form.addEventListener("submit", (ev) => {
+  // Sends one row to the Google Sheet. Apps Script answers with CORS headers
+  // for simple text/plain POSTs; if a browser blocks reading the answer we
+  // fall back to a fire-and-forget request.
+  async function sendToSheet(data) {
+    const opts = { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) };
+    try {
+      const res = await fetch(R.googleSheetUrl, opts);
+      const json = await res.json().catch(() => ({ ok: res.ok }));
+      if (!json.ok) throw new Error(json.error || "Sheet error");
+    } catch (e) {
+      if (e instanceof TypeError) { await fetch(R.googleSheetUrl, { ...opts, mode: "no-cors" }); return; }
+      throw e;
+    }
+  }
+
+  const btn = $("#submitBtn"), btnLabel = $(".btn-label", btn);
+  form.addEventListener("submit", async (ev) => {
     ev.preventDefault();
     const err = $("#formError");
     const name = form.name.value.trim();
@@ -193,46 +216,36 @@
     const yes = form.attending.value === "yes";
     const events = $$("input[name=events]:checked").map((i) => i.value);
     if (yes && !events.length) { err.textContent = "Pick at least one celebration you'll attend."; return; }
+    if (!R.googleSheetUrl) { err.textContent = "RSVPs aren't switched on yet — please check back soon!"; return; }
     err.textContent = "";
 
-    const contact = contacts[form.side ? Number(form.side.value) : 0] || contacts[0];
     const stay = yes && form.stay.value === "yes";
-    const d = (v) => v ? new Date(v + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : "?";
     const data = {
-      name, side: contact ? contact.label : "", attending: yes ? "Yes" : "No",
-      guests: yes ? guests : 0, events: yes ? events.join(", ") : "",
-      accommodation: stay ? "Yes" : (yes ? "No" : ""), checkin: stay ? form.checkin.value : "", checkout: stay ? form.checkout.value : "",
+      name, phone: form.phone.value.trim(), side: form.side ? form.side.value : "",
+      attending: yes ? "Yes" : "No", guests: yes ? guests : 0,
+      events: yes ? (events.length === C.events.length ? "All" : events.join(", ")) : "",
+      accommodation: stay ? "Yes" : (yes ? "No" : ""),
+      checkin: stay ? form.checkin.value : "", checkout: stay ? form.checkout.value : "",
       food: yes && form.food ? (form.food.value || "") : "", message: form.message.value.trim(),
     };
 
-    // The WhatsApp message (WhatsApp formatting: *bold*, _italic_)
-    const lines = [
-      `💌 *RSVP — ${C.bride} & ${C.groom}'s Wedding*`, "",
-      `*Name:* ${data.name}`,
-      contacts.length > 1 ? `*Side:* ${data.side}` : null,
-      `*Attending:* ${yes ? "Yes, joyfully! ✅" : "Sadly can't make it 🙏"}`,
-    ];
-    if (yes) {
-      lines.push(`*Guests:* ${data.guests}`);
-      lines.push(`*Events:* ${events.length === C.events.length ? "All of them! 🎉" : data.events}`);
-      lines.push(`*Accommodation:* ${stay ? `Yes (${d(data.checkin)} → ${d(data.checkout)})` : "Not needed"}`);
-      if (data.food) lines.push(`*Food:* ${data.food}`);
+    btn.disabled = true; btnLabel.textContent = "Sending…";
+    try {
+      await sendToSheet(data);
+    } catch (e) {
+      err.textContent = "Hmm, that didn't go through. Please check your internet and try again.";
+      btn.disabled = false; btnLabel.textContent = "Send my RSVP";
+      return;
     }
-    if (data.message) lines.push("", `_${data.message}_`);
-    const text = lines.filter((l) => l !== null).join("\n");
-    waUrl = `https://wa.me/${(contact && contact.whatsapp || "").replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
+    btn.disabled = false; btnLabel.textContent = "Send my RSVP";
 
-    // Optional: log to Google Sheet in the background
-    if (R.googleSheetUrl) {
-      fetch(R.googleSheetUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(() => {});
-    }
-
-    $("#waFallback").href = waUrl;
+    $("#doneText").textContent = yes
+      ? `Your RSVP is in, ${name.split(/[ &]/)[0]} — we can't wait to celebrate with you!`
+      : "Thank you for letting us know. You'll be missed — we'll save you some mithai!";
     form.hidden = true; $("#rsvpDone").hidden = false;
+    $("#rsvpDone").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
     const art = $(".done-art"); art.classList.remove("drawn"); void art.offsetWidth; art.classList.add("drawn");
     if (yes) confetti();
-    // open WhatsApp (a real link click works best on phones)
-    setTimeout(() => { const a = document.createElement("a"); a.href = waUrl; a.target = "_blank"; a.rel = "noopener"; document.body.appendChild(a); a.click(); a.remove(); }, 700);
   });
   $("#editRsvp").addEventListener("click", () => { form.hidden = false; $("#rsvpDone").hidden = true; });
 

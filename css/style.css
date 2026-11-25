@@ -266,6 +266,7 @@ em { font-style: italic; }
 }
 .stamp small { font: 700 10px var(--font-display); letter-spacing: .2em; margin-top: 6px; }
 form { display: grid; gap: 24px; position: relative; }
+form[hidden] { display: none; }
 fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 .field > span, .field > legend, .field .label { display: block; font: 600 12px var(--font-display); letter-spacing: .18em; text-transform: uppercase; margin-bottom: 10px; }
 .field small { text-transform: none; letter-spacing: 0; font: italic 15px var(--font-body); color: var(--ink-soft); }
@@ -312,11 +313,12 @@ input[type=radio], input[type=checkbox] { position: absolute; opacity: 0; pointe
 
 .btn-primary {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 56px; padding: 14px 20px;
-  border: 0; border-radius: 99px; background: var(--wa); color: #fff; text-decoration: none; cursor: pointer;
-  font: 700 15px var(--font-display); letter-spacing: .06em; box-shadow: 0 10px 22px -10px rgba(31, 157, 85, .7); transition: transform .2s, box-shadow .2s;
+  border: 0; border-radius: 99px; background: var(--ink); color: var(--paper); text-decoration: none; cursor: pointer;
+  font: 700 15px var(--font-display); letter-spacing: .06em; box-shadow: 0 10px 22px -10px rgba(29, 26, 22, .6), inset 0 0 0 2px rgba(184, 137, 46, .5); transition: transform .2s, box-shadow .2s;
 }
 .btn-primary svg { width: 22px; height: 22px; }
 .btn-primary:active { transform: scale(.97); }
+.btn-primary:disabled { opacity: .6; cursor: wait; }
 .btn-link { background: none; border: 0; text-decoration: underline; font: 500 18px var(--font-body); cursor: pointer; color: var(--ink-soft); margin-top: 6px; }
 .fine { text-align: center; font-size: 16px; color: var(--ink-soft); margin: -10px 0 0; }
 .form-error { color: #b3261e; margin: 0; min-height: 0; font-style: italic; }

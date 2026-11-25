@@ -7,7 +7,7 @@ Plain HTML + CSS + JavaScript. No build step, no frameworks, no installs.
 ```
 wedding-site/
 ├── index.html            ← page structure (sections in order)
-├── js/config.js          ← ✏️  ALL your content: names, events, dates, venues, WhatsApp numbers
+├── js/config.js          ← ✏️  ALL your content: names, events, dates, venues, RSVP sheet link
 ├── css/style.css         ← look & feel; colours/fonts are at the very top (:root)
 ├── js/illustrations.js   ← the hand-drawn SVG drawings
 ├── js/main.js            ← behaviour (envelope, animations, RSVP) — rarely needs edits
@@ -25,8 +25,8 @@ Tip: the envelope only shows once per tab. Open a new tab to see it again.
 |---|---|
 | Put your names | `bride`, `groom` |
 | Add time & venue | each event's `date: "2027-01-22"`, `start: "10:00"`, `end: "13:00"`, `venue`, `address`, `mapsUrl` |
-| Change WhatsApp numbers | `rsvp.contacts` → `whatsapp: "91XXXXXXXXXX"` (country code, digits only) |
-| One RSVP number only | keep just one entry in `rsvp.contacts` (the "Bride's/Groom's side" question disappears) |
+| Connect RSVPs to your sheet | `rsvp.googleSheetUrl` |
+| Hide the "Bride's/Groom's side" question | `rsvp.sides: []` |
 | Countdown | `countdownTo` |
 | Reorder / remove an event | move or delete its `{ ... }` block in `events` |
 | Hide something | set its text to `""` (e.g. `hashtag: ""`) |
@@ -47,11 +47,11 @@ Keep GIFs under ~3 MB so the site loads fast on mobile data (ezgif.com can shrin
 - New drawing: add a function in `illustrations.js`, use its name as `art:` in config.
 
 ## How RSVP works
-Guest fills the form → WhatsApp opens with a formatted message to your number → they tap Send.
-It works without servers or logins and suits guests who live on WhatsApp.
-WhatsApp never sends on its own, so a guest could close it without sending.
-To keep a backup list, set up the Google Sheet logger (instructions inside `rsvp-google-sheet.gs`) and paste its URL into `rsvp.googleSheetUrl`.
-Every submission then also lands in the sheet automatically, even if they forget to hit Send.
+Guests fill the form → their reply is saved as a new row in your Google Sheet (in your Drive).
+One-time set-up: follow the steps at the top of `rsvp-google-sheet.gs`, then paste the
+web-app URL into `js/config.js` → `rsvp.googleSheetUrl`. Until then the form politely says
+RSVPs aren't open yet. Set `EMAIL_ME = true` in the script to also get an email per RSVP.
+If a guest re-submits, you'll see two rows — the latest one is their current answer.
 
 ## Hosting for free (pick one)
 

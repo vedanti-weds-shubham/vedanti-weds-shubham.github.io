@@ -1,30 +1,32 @@
 /* =====================================================================
    ✏️  EDIT THIS FILE — almost everything you'll want to change is here.
-   Names, dates, venues, events, WhatsApp numbers, GIFs.
+   Names, dates, venues, events, RSVP sheet link, GIFs.
    You don't need to touch the HTML/CSS/JS for normal updates.
    ===================================================================== */
 
 window.WEDDING = {
 
   /* ---------- The couple ---------- */
-  bride: "Priya",          // ← your name
-  groom: "Arnab",          // ← his name
+  bride: "Vedanti",
+  groom: "Shubham",
+  groomFirst: true,        // true → shows "Shubham & Vedanti" (as on the printed card)
   // Shown on the wax seal of the envelope. Leave "" to auto-use first letters.
   initials: "",
 
   /* ---------- Big picture ---------- */
-  blessing: "॥ श्री गणेशाय नमः ॥",            // tiny line at the very top ("" to hide)
+  blessing: "॥ श्री गजानन प्रसन्न ॥",            // tiny line at the very top ("" to hide)
   headline: "OUI DO!",                       // the big playful heading
   tagline: "we're getting married!",         // handwritten line under it
-  dateText: "January 2027",                  // shown in hero; e.g. "24 · 01 · 2027"
-  cityText: "Navi Mumbai",                   // shown in hero
+  dateText: "28 – 30 January 2027",          // shown in hero
+  cityText: "Mumbai",                   // shown in hero
   // Countdown target — the main wedding moment (IST). Format: YYYY-MM-DDTHH:MM:SS+05:30
-  countdownTo: "2027-01-24T19:00:00+05:30",
-  hashtag: "#PriyaSaysOuiToArnab",           // "" to hide
+  countdownTo: "2027-01-29T12:18:00+05:30",   // shubh muhurat
+  hashtag: "",                               // "" hides it
 
   invitationText:
-    "With the blessings of our families, we joyfully invite you to celebrate " +
-    "as two families, two cultures and one very happy couple come together. " +
+    "With the blessings of the Shinde, Vhatkar and Sarkar families, we joyfully " +
+    "invite you to celebrate the wedding of Shubham and Vedanti, as two families, " +
+    "two cultures and one very happy couple come together. " +
     "Your presence would make our celebrations complete.",
 
   /* ---------- GIFs / images ----------
@@ -46,13 +48,13 @@ window.WEDDING = {
   events: [
     {
       name: "Haldi",
-      native: "हळद",
+      native: "हळदी समारंभ",
       art: "haldi",
       accent: "#E9A825",
-      note: "a splash of turmeric & a lot of laughter",
-      date: "", start: "", end: "",
-      venue: "", address: "", mapsUrl: "",
-      dressCode: "Shades of yellow — wear something you don't mind getting messy!",
+      note: "Gaye Holud at 12:00 PM · Haldi at 12:40 PM",
+      date: "2027-01-28", start: "12:00", end: "",
+      venue: "Novotel Mumbai Juhu Beach", address: "Juhu Beach, Balraj Sahani Road, Juhu, Mumbai – 400 049", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Novotel+Mumbai+Juhu+Beach",
+      dressCode: "Warm colours — yellows, oranges & reds",
     },
     {
       name: "Mehendi",
@@ -60,8 +62,8 @@ window.WEDDING = {
       art: "mehendi",
       accent: "#6E9B3A",
       note: "henna, music & gossip",
-      date: "", start: "", end: "",
-      venue: "", address: "", mapsUrl: "",
+      date: "2027-01-28", start: "18:00", end: "",
+      venue: "Burgundy Room, Novotel Mumbai", address: "Juhu Beach, Balraj Sahani Road, Juhu, Mumbai – 400 049", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Novotel+Mumbai+Juhu+Beach",
       dressCode: "Greens & florals",
     },
     {
@@ -70,28 +72,28 @@ window.WEDDING = {
       art: "sangeet",
       accent: "#C8326B",
       note: "bring your dancing shoes",
-      date: "", start: "", end: "",
-      venue: "", address: "", mapsUrl: "",
+      date: "2027-01-28", start: "19:30", end: "",
+      venue: "Champagne Ball Room, Novotel Mumbai", address: "Juhu Beach, Balraj Sahani Road, Juhu, Mumbai – 400 049", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Novotel+Mumbai+Juhu+Beach",
       dressCode: "Indo-western glam",
     },
     {
       name: "Marathi Wedding",
-      native: "शुभ विवाह",
+      native: "शुभविवाह",
       art: "marathi",
       accent: "#2F7D5B",
-      note: "mangalashtakas, antarpat & akshata",
-      date: "", start: "", end: "",
-      venue: "", address: "", mapsUrl: "",
-      dressCode: "Traditional Maharashtrian — nauvari, paithani, pheta",
+      note: "shubh muhurat at 12:18 PM — mangalashtakas & akshata",
+      date: "2027-01-29", start: "12:18", end: "",
+      venue: "Novotel Mumbai Juhu Beach", address: "Juhu Beach, Balraj Sahani Road, Juhu, Mumbai – 400 049", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Novotel+Mumbai+Juhu+Beach",
+      dressCode: "Traditional Maharashtrian — please avoid green, it's the bride's colour!",
     },
     {
       name: "Bengali Wedding",
       native: "শুভ বিবাহ",
       art: "bengali",
       accent: "#C62F2F",
-      note: "shubho drishti, sindoor daan & ululu!",
-      date: "", start: "", end: "",
-      venue: "", address: "", mapsUrl: "",
+      note: "shubho drishti, sindoor daan & preetibhoj (dinner)",
+      date: "2027-01-29", start: "18:24", end: "",
+      venue: "Poolside Lawn, Novotel Mumbai", address: "Juhu Beach, Balraj Sahani Road, Juhu, Mumbai – 400 049", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Novotel+Mumbai+Juhu+Beach",
       dressCode: "Traditional Bengali — red, white & gold",
     },
     {
@@ -100,29 +102,21 @@ window.WEDDING = {
       art: "reception",
       accent: "#B8892E",
       note: "one last toast, raise a glass!",
-      date: "", start: "", end: "",
-      venue: "", address: "", mapsUrl: "",
-      dressCode: "Black tie / festive formal",
+      date: "2027-01-30", start: "19:00", end: "",
+      venue: "Lawn, Mumbai Cricket Association Club", address: "G-Block, RG-2, Bandra Kurla Complex, Bandra East, Mumbai – 400 051", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Mumbai+Cricket+Association+Club+Bandra+Kurla+Complex",
+      dressCode: "Indo-western",
     },
   ],
 
   /* ---------- RSVP ----------
-     Guests fill the form → WhatsApp opens with a neatly formatted message
-     to the number below → they just tap Send.
-     Number format: country code + number, digits only. 91XXXXXXXXXX
-     Two contacts = guests choose "Bride's side / Groom's side" and the RSVP
-     goes to the right family. Keep one entry to hide that question.       */
+     Every reply is saved as a new row in your Google Sheet.
+     Set-up (once): see rsvp-google-sheet.gs and paste the web-app URL below. */
   rsvp: {
-    deadline: "31 December 2026",
-    contacts: [
-      { label: "Bride's side", whatsapp: "919999999999" },
-      { label: "Groom's side", whatsapp: "918888888888" },
-    ],
+    googleSheetUrl: "",       // ← paste your Apps Script web-app URL (ends in /exec)
+    deadline: "",             // e.g. "10 January 2027" — "" shows no deadline
+    sides: ["Bride's side", "Groom's side"],   // [] hides this question
     maxGuests: 10,
-    askFood: true,           // show Veg / Non-veg / Jain question
-    // OPTIONAL: also log every RSVP into a Google Sheet (see README.md).
-    // Paste your Apps Script web-app URL here. Leave "" to use WhatsApp only.
-    googleSheetUrl: "",
+    askFood: true,            // show Veg / Non-veg / Jain question
   },
 
   footerNote: "can't wait to celebrate with you",
