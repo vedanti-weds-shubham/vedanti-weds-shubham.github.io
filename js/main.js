@@ -25,15 +25,18 @@
     if (s.length === 2) { s[0].textContent = n1; s[1].textContent = n2; }
   });
   const initials = C.initials || `${n1[0]}&${n2[0]}`;
-  $("#sealInitials").textContent = initials;
+  if ($("#sealInitials")) $("#sealInitials").textContent = initials;
   $$("[data-names-short]").forEach((el) => (el.textContent = `${n1[0]} & ${n2[0]}`));
   document.title = `${C.couple} — ${C.headline}`;
 
   // Headline: split into letters for the bouncy entrance
   const tilt = [-6, 4, -3, 0, 5, -4, 3, -5];
-  $("[data-headline]").innerHTML = [...C.headline].map((ch, i) =>
-    ch === " " ? "<br>" : `<span class="ch" style="--i:${i};--r:${tilt[i % tilt.length]}deg">${esc(ch)}</span>`).join("");
-  $("[data-headline]").setAttribute("aria-label", C.headline);
+  const headline = $("[data-headline]");   // optional: you can remove it from index.html
+  if (headline) {
+    headline.innerHTML = [...C.headline].map((ch, i) =>
+      ch === " " ? "<br>" : `<span class="ch" style="--i:${i};--r:${tilt[i % tilt.length]}deg">${esc(ch)}</span>`).join("");
+    headline.setAttribute("aria-label", C.headline);
+  }
   $$(".hero-text > *").forEach((el, i) => el.style.setProperty("--d", `${0.15 + i * 0.12}s`));
   $$(".hero-text .headline").forEach((el) => el.style.setProperty("--d", "0s"));
 
@@ -79,12 +82,13 @@
   }).join("");
 
   /* ---------- 3. Illustrations & GIFs ---------- */
-  $$("[data-art]").forEach((el) => { el.innerHTML = window.ART[el.dataset.art](); el.classList.add("draw"); });
+  $$("[data-art]").forEach((el) => { if (!window.ART[el.dataset.art]) return; el.innerHTML = window.ART[el.dataset.art](); el.classList.add("draw"); });
 
   $$("[data-gif]").forEach((fig) => {
     const box = $(".polaroid-img", fig);
     const src = C.gifs && C.gifs[fig.dataset.gif];
-    const fallback = () => { box.innerHTML = window.ART[fig.dataset.fallback](); box.classList.add("draw"); prep(box); watchDraw(box); };
+    if (!box) return;
+    const fallback = () => { const a = window.ART[fig.dataset.fallback]; if (!a) return; box.innerHTML = a(); box.classList.add("draw"); prep(box); watchDraw(box); };
     if (!src) return fallback();
     const img = new Image();
     img.alt = ""; img.decoding = "async";
@@ -119,7 +123,8 @@
   };
   let seen = false;
   try { seen = sessionStorage.getItem("opened") === "1"; } catch (e) {}
-  if (seen || reduceMotion) { env.remove(); start(); }
+  if (!env) start();   // envelope removed from index.html
+  else if (seen || reduceMotion) { env.remove(); start(); }
   else {
     $("#openEnvelope").addEventListener("click", () => {
       env.classList.add("open");
@@ -132,7 +137,8 @@
   /* ---------- 6. Falling petals (marigold & rose) ---------- */
   function petals() {
     if (reduceMotion) return;
-    const box = $(".petals"), colors = ["#E9A825", "#F0B93B", "#D9534F", "#E7A6A1", "#F3C96B"];
+    const box = $(".petals"); if (!box) return;
+    const colors = ["#E9A825", "#F0B93B", "#D9534F", "#E7A6A1", "#F3C96B"];
     const n = innerWidth < 760 ? 14 : 24;
     for (let i = 0; i < n; i++) {
       const p = document.createElement("span");
@@ -148,10 +154,11 @@
   const target = new Date(C.countdownTo).getTime();
   const cd = Object.fromEntries($$("[data-cd]").map((el) => [el.dataset.cd, el]));
   const tick = () => {
+    if (!cd.d) return;
     let s = Math.max(0, Math.floor((target - Date.now()) / 1000));
     const v = { d: Math.floor(s / 86400), h: Math.floor((s % 86400) / 3600), m: Math.floor((s % 3600) / 60), s: s % 60 };
     for (const k in v) { const t = String(v[k]).padStart(2, "0"); if (cd[k].textContent !== t) cd[k].textContent = t; }
-    if (s === 0) $(".countdown-note").textContent = "we said oui! 🥂";
+    if (s === 0 && $(".countdown-note")) $(".countdown-note").textContent = "we said oui! 🥂";
   };
   tick(); setInterval(tick, 1000);
 
@@ -168,15 +175,15 @@
 
   /* ---------- 9. RSVP form → Google Sheet ---------- */
   const form = $("#rsvpForm"), R = C.rsvp;
-  if (!R.deadline) $("#rsvpSub").textContent = "we'd love to know if you can make it";
+  if (!R.deadline && $("#rsvpSub")) $("#rsvpSub").textContent = "we'd love to know if you can make it";
   const sides = R.sides || [];
   if (sides.length) {
     $("#sideChips").innerHTML = sides.map((label, i) =>
       `<label><input type="radio" name="side" value="${esc(label)}" ${i === 0 ? "checked" : ""}/><span>${esc(label)}</span></label>`).join("");
-  } else $("#sideField").remove();
+  } else if ($("#sideField")) $("#sideField").remove();
   $("#eventChips").innerHTML = C.events.map((e) =>
     `<label><input type="checkbox" name="events" value="${esc(e.name)}" checked/><span>${esc(e.name)}</span></label>`).join("");
-  if (!R.askFood) $("#foodField").remove();
+  if (!R.askFood && $("#foodField")) $("#foodField").remove();
 
   let guests = 1;
   const out = $("#guestCount");

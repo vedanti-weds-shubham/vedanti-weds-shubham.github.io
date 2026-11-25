@@ -25,7 +25,7 @@ window.WEDDING = {
 
   invitationText:
     "With the blessings of both the families, we joyfully " +
-    "invite you to celebrate our wedding, as" +
+    "invite you to celebrate our wedding, as " +
     "two cultures and one very happy couple come together. " +
     "Your presence would make our celebrations complete.",
 
