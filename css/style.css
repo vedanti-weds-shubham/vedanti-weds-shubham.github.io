@@ -187,7 +187,7 @@ em { font-style: italic; }
 }
 .js .polaroid { opacity: 0; transform: rotate(6deg) translateY(30px) scale(.94); }
 .loaded .polaroid { opacity: 1; transform: rotate(-3deg); transition: opacity 1s 1.3s, transform 1.4s 1.3s var(--ease); }
-.polaroid-img { aspect-ratio: 5 / 7; background: var(--paper); display: grid; place-items: center; overflow: hidden; }
+.polaroid-img { aspect-ratio: 1 / 1; background: var(--paper); display: grid; place-items: center; overflow: hidden; }
 .polaroid-img img { width: 100%; height: 100%; object-fit: cover; }
 .polaroid-img .art { width: 82%; }
 .polaroid figcaption { font-size: 26px; padding-top: 6px; }
