@@ -321,7 +321,7 @@ input[type=radio], input[type=checkbox] { position: absolute; opacity: 0; pointe
 .stepper output.bump { animation: bump .3s; }
 @keyframes bump { 50% { transform: scale(1.35); } }
 
-.if-attending, .stay-dates { display: grid; gap: 24px; overflow: hidden; transition: grid-template-rows .5s var(--ease), opacity .4s; }
+.if-attending, .stay-dates { display: grid; gap: 24px; transition: grid-template-rows .5s var(--ease), opacity .4s; }
 .if-attending[aria-hidden=true], .stay-dates[aria-hidden=true] { display: none; }
 .stay-dates { grid-template-columns: 1fr 1fr; gap: 14px; animation: fadeDown .5s var(--ease); }
 @keyframes fadeDown { from { opacity: 0; transform: translateY(-8px); } }
