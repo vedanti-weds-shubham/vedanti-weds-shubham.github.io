@@ -53,9 +53,12 @@
     return "https://calendar.google.com/calendar/render?" + p;
   };
 
+  const ICON = { cal: '<path d="M4 7h16v13H4zM4 11h16M8 4v5M16 4v5"/>', pin: '<path d="M12 21s-6-5.6-6-11a6 6 0 0 1 12 0c0 5.4-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/>', hanger: '<path d="M12 7a2 2 0 1 1 2-2M12 7v2L3.5 15.2a1 1 0 0 0 .6 1.8h15.8a1 1 0 0 0 .6-1.8L12 9"/>' };
+  const icon = (k) => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
   $("#timeline").innerHTML = C.events.map((e, i) => {
+    const time = e.timeText ? esc(e.timeText) : e.start ? `${fmtTime(e.start)}${e.end ? " – " + fmtTime(e.end) : " onwards"}` : "";
     const when = e.date
-      ? `${fmtDate(e.date)}${e.start ? `<small>${fmtTime(e.start)}${e.end ? " – " + fmtTime(e.end) : " onwards"}</small>` : ""}`
+      ? `${fmtDate(e.date)}${time ? `<small>${time}</small>` : ""}`
       : `<span class="tba">Date & time coming soon</span>`;
     const where = e.venue ? `${esc(e.venue)}${e.address ? `<small>${esc(e.address)}</small>` : ""}` : `<span class="tba">Venue coming soon</span>`;
     const cal = gcal(e);
@@ -69,9 +72,9 @@
         <h3>${esc(e.name)}</h3>
         ${e.note ? `<p class="event-note">${esc(e.note)}</p>` : ""}
         <dl class="event-details">
-          <div><dt aria-label="When">🗓</dt><dd>${when}</dd></div>
-          <div><dt aria-label="Where">📍</dt><dd>${where}</dd></div>
-          ${e.dressCode ? `<div><dt aria-label="Dress code">👗</dt><dd>${esc(e.dressCode)}</dd></div>` : ""}
+          <div><dt aria-label="When">${icon("cal")}</dt><dd>${when}</dd></div>
+          <div><dt aria-label="Where">${icon("pin")}</dt><dd>${where}</dd></div>
+          ${e.dressCode ? `<div><dt aria-label="Dress code">${icon("hanger")}</dt><dd>${esc(e.dressCode)}</dd></div>` : ""}
         </dl>
         ${cal || e.mapsUrl ? `<div class="event-actions">
           ${e.mapsUrl ? `<a class="btn-ghost" href="${esc(e.mapsUrl)}" target="_blank" rel="noopener">↗ Directions</a>` : ""}
@@ -113,26 +116,19 @@
   $$(".reveal").forEach((el, i) => { if (el.parentElement.classList.contains("invite")) el.style.setProperty("--d", `${(i % 5) * 0.08}s`); io.observe(el); });
   $$(".draw").forEach((el) => { if (!el.closest(".hero")) io.observe(el); });
 
-  /* ---------- 5. Envelope → open ---------- */
-  const env = $("#envelope");
+  /* ---------- 5. Envelope → open ----------
+     The tap itself is handled by the small script right after the envelope
+     in index.html (so it works instantly). Here we just start the show.   */
+  let started = false;
   const start = () => {
+    if (started) return; started = true;
     document.body.classList.remove("locked");
     document.body.classList.add("loaded");
     setTimeout(() => $$(".hero .draw").forEach((el) => el.classList.add("drawn")), 500);
     petals();
   };
-  let seen = false;
-  try { seen = sessionStorage.getItem("opened") === "1"; } catch (e) {}
-  if (!env) start();   // envelope removed from index.html
-  else if (seen || reduceMotion) { env.remove(); start(); }
-  else {
-    $("#openEnvelope").addEventListener("click", () => {
-      env.classList.add("open");
-      try { sessionStorage.setItem("opened", "1"); } catch (e) {}
-      setTimeout(start, 1100);
-      setTimeout(() => env.remove(), 2000);
-    }, { once: true });
-  }
+  if (window.__envOpened || !$("#envelope")) start();
+  else document.addEventListener("envelope:opened", start);
 
   /* ---------- 6. Falling petals (marigold & rose) ---------- */
   function petals() {
@@ -170,19 +166,42 @@
     const past = scrollY > innerHeight * 0.7;
     nav.classList.toggle("show", past);
     pill.classList.toggle("show", past && !rsvpVisible);
+    document.body.classList.toggle("scrolled", scrollY > 40);
   }
   addEventListener("scroll", onScroll, { passive: true });
 
   /* ---------- 9. RSVP form → Google Sheet ---------- */
   const form = $("#rsvpForm"), R = C.rsvp;
-  if (!R.deadline && $("#rsvpSub")) $("#rsvpSub").textContent = "we'd love to know if you can make it";
+  if (!R.deadline && $("#rsvpSub")) $("#rsvpSub").textContent = "we'd love to know if you can make it. please rsvp as soon as possible.";
   const sides = R.sides || [];
   if (sides.length) {
     $("#sideChips").innerHTML = sides.map((label, i) =>
       `<label><input type="radio" name="side" value="${esc(label)}" ${i === 0 ? "checked" : ""}/><span>${esc(label)}</span></label>`).join("");
+    // Playful nudge for the groom's side (purely for fun — doesn't block anything)
+    const tease = $("#sideTease");
+    $$("input[name=side]", $("#sideChips")).forEach((r) => r.addEventListener("change", () => {
+      if (!tease) return;
+      const groomSide = r.checked && r.value === sides[1];
+      tease.textContent = groomSide ? "are you sure? 🤭" : "";
+      tease.classList.remove("wiggle"); void tease.offsetWidth;
+      if (groomSide) tease.classList.add("wiggle");
+    }));
   } else if ($("#sideField")) $("#sideField").remove();
-  $("#eventChips").innerHTML = C.events.map((e) =>
-    `<label><input type="checkbox" name="events" value="${esc(e.name)}" checked/><span>${esc(e.name)}</span></label>`).join("");
+  // Events grouped by day: date on top, that day's events side by side below
+  const days = [];
+  C.events.forEach((e) => {
+    let g = days.find((d) => d.date === e.date);
+    if (!g) days.push(g = { date: e.date, events: [] });
+    g.events.push(e);
+  });
+  const dayLabel = (d) => d ? new Date(d + "T00:00:00").toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "short" }) : "More";
+  $("#eventChips").innerHTML = days.map((g) => `
+    <div class="day-group">
+      <p class="day-label">${dayLabel(g.date)}</p>
+      <div class="day-chips" style="--n:${g.events.length}">
+        ${g.events.map((e) => `<label><input type="checkbox" name="events" value="${esc(e.name)}" checked/><span>${esc(e.name)}</span></label>`).join("")}
+      </div>
+    </div>`).join("");
   if (!R.askFood && $("#foodField")) $("#foodField").remove();
 
   let guests = 1;
@@ -251,7 +270,7 @@
       : "Thank you for letting us know. You'll be missed — we'll save you some mithai!";
     form.hidden = true; $("#rsvpDone").hidden = false;
     $("#rsvpDone").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
-    const art = $(".done-art"); art.classList.remove("drawn"); void art.offsetWidth; art.classList.add("drawn");
+    const art = $(".done-art"); if (art) { art.classList.remove("drawn"); void art.offsetWidth; art.classList.add("drawn"); }
     if (yes) confetti();
   });
   $("#editRsvp").addEventListener("click", () => { form.hidden = false; $("#rsvpDone").hidden = true; });

@@ -12,9 +12,9 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Caveat:wght@500;700&family=Tiro+Devanagari+Marathi&family=Tiro+Bangla&display=swap" rel="stylesheet" />
-  <!-- ?v=6 → bump this number (all 4 places) after each update so browsers fetch fresh files -->
-  <link rel="stylesheet" href="css/style.css?v=6" />
+  <link media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Caveat:wght@500;700&family=Great+Vibes&family=Tiro+Devanagari+Marathi&family=Tiro+Bangla&display=swap" rel="stylesheet" />
+  <!-- ?v=9 → bump this number (all 4 places) after each update so browsers fetch fresh files -->
+  <link rel="stylesheet" href="css/style.css?v=9" />
 </head>
 <body class="locked">
 
@@ -34,6 +34,25 @@
     </button>
     <p class="envelope-hint">you've got mail! <span>tap to open</span></p>
   </div>
+  <script>
+  /* Opens the envelope instantly, even before the rest of the page has loaded. */
+  (function () {
+    var s = document.getElementById("envelope"), b = document.body, seen = false;
+    if (!s) return;
+    try { seen = sessionStorage.getItem("opened") === "1"; } catch (e) {}
+    if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) seen = true;
+    function done() { window.__envOpened = true; b.classList.remove("locked"); document.dispatchEvent(new Event("envelope:opened")); }
+    if (seen) { s.parentNode.removeChild(s); done(); return; }
+    function open() {
+      if (s.classList.contains("open")) return;
+      s.classList.add("open");
+      try { sessionStorage.setItem("opened", "1"); } catch (e) {}
+      setTimeout(done, 1100);
+      setTimeout(function () { if (s.parentNode) s.parentNode.removeChild(s); }, 2000);
+    }
+    s.addEventListener("click", open);
+  })();
+  </script>
 
   <!-- ============ TOP NAV (desktop) + RSVP pill (phone) ============ -->
   <nav class="topnav" id="topnav" aria-label="Sections">
@@ -97,7 +116,7 @@
     <!-- ============ 5. RSVP ============ -->
     <section class="rsvp section" id="rsvp">
       <header class="section-head reveal">
-        <h2>Will you say <em>oui</em> too?</h2>
+        <!-- <h2>Will you say <em>oui</em> too?</h2> -->
         <p class="hand" id="rsvpSub">kindly reply by <span data-bind="rsvp.deadline"></span></p>
       </header>
 
@@ -106,7 +125,7 @@
         <form id="rsvpForm" novalidate>
           <label class="field">
             <span>Your name(s)</span>
-            <input name="name" required autocomplete="name" placeholder="e.g. Neha & Rahul Sharma" />
+            <input name="name" required autocomplete="name" placeholder="e.g. Nobita and Shizuka" />
           </label>
 
           <label class="field">
@@ -117,6 +136,7 @@
           <fieldset class="field" id="sideField">
             <legend>You're coming from…</legend>
             <div class="chips single" id="sideChips"></div>
+            <p class="side-tease" id="sideTease" aria-live="polite"></p>
           </fieldset>
 
           <fieldset class="field">
@@ -178,9 +198,9 @@
         </form>
 
         <div class="rsvp-done" id="rsvpDone" hidden>
-          <div data-art="reception" class="done-art"></div>
-          <h3>Merci beaucoup!</h3>
-          <p id="doneText">Your RSVP is in — we can't wait to celebrate with you!</p>
+          <img class="done-img" src="assets/rsvp-thanks.jpg" alt="The couple driving off together" width="720" height="540" loading="lazy" />
+          <h3>Thank you</h3>
+          <p id="doneText">Your RSVP is in — </p>
           <button class="btn-link" type="button" id="editRsvp">Edit my response</button>
         </div>
       </div>
@@ -197,8 +217,8 @@
 
   <canvas id="confetti" aria-hidden="true"></canvas>
 
-  <script src="js/config.js?v=6"></script>
-  <script src="js/illustrations.js?v=6"></script>
-  <script src="js/main.js?v=6"></script>
+  <script src="js/config.js?v=9"></script>
+  <script src="js/illustrations.js?v=9"></script>
+  <script src="js/main.js?v=9"></script>
 </body>
 </html>

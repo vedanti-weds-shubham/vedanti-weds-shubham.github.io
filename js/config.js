@@ -41,6 +41,7 @@ window.WEDDING = {
 
   /* ---------- Events ----------
      date:  "YYYY-MM-DD"     start/end: "HH:MM" (24-hour)
+     timeText: optional custom wording for the time line (e.g. "Shubh muhurat at 12:18 PM")
      Leave date/time/venue as "" and the card shows "details coming soon".
      mapsUrl: paste a Google Maps share link for the venue.
      art: which drawing to use — haldi | mehendi | sangeet | marathi | bengali | reception
@@ -51,9 +52,9 @@ window.WEDDING = {
       native: "हळदी समारंभ",
       art: "haldi",
       accent: "#E9A825",
-      note: "Gaye Holud at 12:00 PM · Haldi at 12:40 PM",
+      note: "Gaye Holud",
       date: "2027-01-28", start: "12:00", end: "",
-      venue: "Novotel Mumbai Juhu Beach", address: "Juhu Beach, Balraj Sahani Road, Juhu, Mumbai – 400 049", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Novotel+Mumbai+Juhu+Beach",
+      venue: "Novotel Mumbai", address: "Juhu Beach, Balraj Sahani Road, Juhu, Mumbai – 400 049", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Novotel+Mumbai+Juhu+Beach",
       dressCode: "yellows, oranges & reds - any colours that you don't mind staining",
     },
     {
@@ -81,9 +82,10 @@ window.WEDDING = {
       native: "शुभविवाह",
       art: "marathi",
       accent: "#2F7D5B",
-      note: "shubh muhurat at 12:18 PM — mangalashtakas & akshata",
+      note: "mangalashtakas, akshata & pangat",
       date: "2027-01-29", start: "12:18", end: "",
-      venue: "Novotel Mumbai Juhu Beach", address: "Juhu Beach, Balraj Sahani Road, Juhu, Mumbai – 400 049", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Novotel+Mumbai+Juhu+Beach",
+      timeText: "Shubh muhurat at 12:18 PM",   // optional: replaces the time line
+      venue: "Novotel Mumbai", address: "Juhu Beach, Balraj Sahani Road, Juhu, Mumbai – 400 049", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Novotel+Mumbai+Juhu+Beach",
       dressCode: "Traditional Maharashtrian — please avoid green, it's the bride's colour!",
     },
     {
@@ -91,8 +93,9 @@ window.WEDDING = {
       native: "শুভ বিবাহ",
       art: "bengali",
       accent: "#C62F2F",
-      note: "shubho drishti, sindoor daan & preetibhoj (dinner)",
+      note: "shubho drishti, sindoor daan & preetibhoj",
       date: "2027-01-29", start: "18:24", end: "",
+      timeText: "Shubh muhurat at 6:24 PM",
       venue: "Poolside Lawn, Novotel Mumbai", address: "Juhu Beach, Balraj Sahani Road, Juhu, Mumbai – 400 049", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Novotel+Mumbai+Juhu+Beach",
       dressCode: "Traditional Bengali — red, white & gold",
     },
@@ -101,7 +104,7 @@ window.WEDDING = {
       native: "Reception",
       art: "reception",
       accent: "#B8892E",
-      note: "one last toast, raise a glass!",
+      note: "toast to the happy couple!",
       date: "2027-01-30", start: "19:00", end: "",
       venue: "Lawn, Mumbai Cricket Association Club", address: "G-Block, RG-2, Bandra Kurla Complex, Bandra East, Mumbai – 400 051", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Mumbai+Cricket+Association+Club+Bandra+Kurla+Complex",
       dressCode: "Indo-western",
