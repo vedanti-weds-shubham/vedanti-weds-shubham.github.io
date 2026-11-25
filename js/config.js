@@ -24,8 +24,8 @@ window.WEDDING = {
   hashtag: "",                               // "" hides it
 
   invitationText:
-    "With the blessings of the Shinde and Sarkar families, we joyfully " +
-    "invite you to celebrate our wedding, as two families, " +
+    "With the blessings of both the families, we joyfully " +
+    "invite you to celebrate our wedding, as" +
     "two cultures and one very happy couple come together. " +
     "Your presence would make our celebrations complete.",
 

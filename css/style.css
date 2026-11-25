@@ -236,7 +236,7 @@ em { font-style: italic; }
 .event-native.bn { font-family: "Tiro Bangla", serif; }
 .event h3 { font-size: clamp(38px, 10.5vw, 56px); font-weight: 800; letter-spacing: -.015em; }
 .event-note { font: 500 24px var(--font-hand); color: var(--ink-soft); margin: 4px 0 10px; }
-.event-details { margin: 0; display: grid; gap: 10px; padding: 16px 18px; border-radius: var(--radius); background: rgba(255, 253, 248, .6); border: 1.5px dashed rgba(29, 26, 22, .3); }
+.event-details { margin: 0; display: grid; gap: 10px; padding: 16px 18px; border-radius: var(--radius); background: #FFE3E3; border: 1.5px dashed rgba(29, 26, 22, .3); }
 .event-details div { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; }
 .event-details dt { font-size: 16px; line-height: 1.6; }
 .event-details dd { margin: 0; line-height: 1.35; }
